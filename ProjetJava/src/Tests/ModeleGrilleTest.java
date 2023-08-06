@@ -64,4 +64,58 @@ public class ModeleGrilleTest {
         String contenuCase = modeleGrille.getContent(1, 1);
         assertEquals("def double", contenuCase);
     }
+    
+    @BeforeEach
+    public void setUp() {
+        modeleGrille = new ModeleGrille(6, 10, 30, 1);
+    }
+
+    @Test
+    public void testGetNbCaseVideHorizontalDirect() {
+        int x = 1;
+        int y = 1;
+        ModeleGrille.Direction direction = ModeleGrille.Direction.HORIZONTAL;
+        int result = modeleGrille.getNbCaseVide(x, y, direction);
+        assertEquals(9, result);
+    }
+
+    @Test
+    public void testGetNbCaseVideHorizontalIndirect() {
+        int x = 1;
+        int y = 1;
+        ModeleGrille.Direction direction = ModeleGrille.Direction.HORIZONTAL_INDIRECT;
+        int result = modeleGrille.getNbCaseVide(x, y, direction);
+        assertEquals(10, result);
+    }
+
+    @Test
+    public void testGetNbCaseVideVerticalDirect() {
+        int x = 1;
+        int y = 1;
+        ModeleGrille.Direction direction = ModeleGrille.Direction.VERTICAL;
+        int result = modeleGrille.getNbCaseVide(x, y, direction);
+        assertEquals(5, result);
+    }
+
+    @Test
+    public void testGetNbCaseVideVerticalIndirect() {
+        int x = 1;
+        int y = 1;
+        ModeleGrille.Direction direction = ModeleGrille.Direction.VERTICAL_INDIRECT;
+        int result = modeleGrille.getNbCaseVide(x, y, direction);
+        assertEquals(6, result);
+    }
+
+    @Test
+    public void testIsDirectionEmptyVerticalIndirect() {
+        int x = 1;
+        int y = 6;
+        int numberOfLetters = 6;
+        ModeleGrille.Direction direction = ModeleGrille.Direction.VERTICAL_INDIRECT;
+        boolean result = modeleGrille.isDirectionEmpty(x, y, numberOfLetters, direction);
+        assertEquals(true, result);
+
+        // Check the letter at (x, y - 1), which should be 'y'
+        assertEquals("y", modeleGrille.getCase(x, y - 1).getContent());
+    }
 }
