@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 
 public class Main {
@@ -12,8 +13,11 @@ public class Main {
 	private static JButton[][] caseButtons;
 	private static Mot mot;
 	private static Definition definition;
+	private static Fichier dictionnaire;
+	private static JFrame frame;
 
     public static void main(String[] args) {
+    	dictionnaire = new Fichier();
         SwingUtilities.invokeLater(() -> {
             Scanner scanner = new Scanner(System.in);
 
@@ -35,9 +39,21 @@ public class Main {
     }
 
     private static void afficherInterfaceGraphique(int hauteur, int largeur) {
-        JFrame frame = new JFrame("Grille de mots croisés");
+    	frame = new JFrame("Grille de mots croisés");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(hauteur, largeur));
+        frame.setLayout(new BorderLayout());
+        
+        JPanel gridPanel = new JPanel(new GridLayout(hauteur, largeur));
+        frame.add(gridPanel, BorderLayout.CENTER);
+        
+        JButton dictionnaireButton = new JButton("Dictionnaire");
+        dictionnaireButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rechercherDansDictionnaire();
+            }
+        });
+        frame.add(dictionnaireButton, BorderLayout.SOUTH);
         
         caseButtons = new JButton[hauteur][largeur];
         for (int i = 0; i < hauteur; i++) {
@@ -51,7 +67,7 @@ public class Main {
                 JPanel panel = new JPanel(new BorderLayout());
                 panel.add(caseButton, BorderLayout.CENTER);
                 panel.setBackground(Color.WHITE);
-                frame.add(panel);
+                gridPanel.add(panel);
                 caseButtons[i2][j2] = caseButton;
                
                 caseButton.addActionListener(new ActionListener() {
@@ -77,14 +93,14 @@ public class Main {
 
 	                  	    int x = cell.getX();
 	                  	    int y = cell.getY();
-	                  	    if (x >= hauteur || y >= largeur) {
+	                  	    if (x > hauteur || y > largeur) {
 	                  	    	JOptionPane.showMessageDialog(null, "La position de départ du mot dépasse la limite de la grille.", "Erreur", JOptionPane.ERROR_MESSAGE);
 	                  	    	return;
 	                  	    }
 	                  	    
 	                  	  switch (choiceDirections) {
                           case 0: // Horizontal direct
-                              if (y + numberOfLetters > largeur) {
+                              if (y + 1 + numberOfLetters > largeur) {
                                   JOptionPane.showMessageDialog(null, "La longueur du mot dépasse la largeur restante de la grille.", "Erreur", JOptionPane.ERROR_MESSAGE);
                                   return;
                               }
@@ -96,7 +112,7 @@ public class Main {
                               }
                               break;
                           case 2: // Vertical direct
-                              if (x + numberOfLetters > hauteur) {
+                              if (x + 1 + numberOfLetters > hauteur) {
                                   JOptionPane.showMessageDialog(null, "La longueur du mot dépasse la hauteur restante de la grille.", "Erreur", JOptionPane.ERROR_MESSAGE);
                                   return;
                               }
@@ -125,7 +141,7 @@ public class Main {
 		                  	cell.setDefinition(definition);
 	                  	    caseButtons[i2][j2].setText(cell.getContent());
 	                  	    mot.addMot(choiceDirections, caseButtons);
-                    	 } else {
+                    	 } else if (contenuCase != "" && contenuCase.length() > 1) {
                     	   String[] deleteDef = {"Supprimer définition (haut)", "Supprimer définition (bas)","Supprimer les 2 définitions"};
                     	   int choiceDeleteDef = JOptionPane.showOptionDialog(frame, "", "Definitions",
                     	           JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, deleteDef, deleteDef[0]);
@@ -135,10 +151,12 @@ public class Main {
                         	   definitionToDelete.deleteDefinition(cell, caseButtons);
                                break;
                            case 1: 
-                               
+                        	   //Definition definitionToDelete = cell.getDefinition();
+                        	   //definitionToDelete.deleteDefinition(cell, caseButtons);
                                break;
                            case 2: 
-                               
+                        	   //Definition definitionToDelete = cell.getDefinition();
+                        	   //definitionToDelete.deleteDefinition(cell, caseButtons);
                                break;
                            default:
                                break;
@@ -152,6 +170,15 @@ public class Main {
 
         frame.pack();
         frame.setVisible(true);
+    }
+    private static void rechercherDansDictionnaire() {
+        String motRecherche = JOptionPane.showInputDialog(frame, "Entrez le mot à rechercher dans le dictionnaire :");
+        if (motRecherche != null && !motRecherche.isEmpty()) {
+            Fichier fichierDictionnaire = new Fichier();
+            ArrayList<String> motsTrouves = fichierDictionnaire.rechercherMot(motRecherche);
+            fichierDictionnaire.printMotsDebut(motRecherche);
+
+        }
     }
 
 }

@@ -64,34 +64,24 @@ public class ModeleGrille {
                 break;
             }
 
-            if (dir == Direction.HORIZONTAL) {
-                j++;
-            } else {
-                i++;
+            switch (dir) {
+                case HORIZONTALDIRECT:
+                    j++;
+                    break;
+                case HORIZONTALINDIRECT:
+                    j--;
+                    break;
+                case VERTICALDIRECT:
+                    i++;
+                    break;
+                case VERTICALINDIRECT:
+                    i--;
+                    break;
+                default:
+                    break;
             }
         }
 
         return nbCasesVides;
-    }
-    public boolean isDirectionEmpty(int x, int y, int numberOfLetters, Direction direction) {
-        int dx = 0;
-        int dy = 0;
-
-        if (direction == Direction.HORIZONTAL) {
-            dx = 1;
-        } else if (direction == Direction.VERTICAL) {
-            dy = 1;
-        }
-
-        for (int i = 0; i < numberOfLetters; i++) {
-            int newX = x + i * dx;
-            int newY = y + i * dy;
-
-            if (getCase(newX, newY).getContent() != null) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
